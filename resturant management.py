@@ -4,7 +4,7 @@ from tkinter import ttk , messagebox
 class RestaurantOrderManagement:
     def __init__ (self,root):
         self.root=root
-        self.title(
+        self.root.title(
             "Restaurant Mangement App"
         )
 
@@ -26,8 +26,8 @@ class RestaurantOrderManagement:
         
         ttk.Label(frame,
                   text="Restaurant Order Management",
-                  font=("Arial",20,"bold")).grid(row=0
-                                                 columnspan3,
+                  font=("Arial",20,"bold")).grid(row=0,
+                                                 columnspan=3,
                                                  padx=10,
                                                  pady=10)
         
@@ -47,7 +47,7 @@ class RestaurantOrderManagement:
 
         self.currency_var=tk.StringVar()
         ttk.Label(frame,text="Currency:",
-                  font=("Arial",12)).grid(row=len(self.menu_items)=1,
+                  font=("Arial",12)).grid(row=len(self.menu_items)+1,
                                           column=0,
                                           padx=10,
                                           pady=5)
@@ -82,3 +82,38 @@ class RestaurantOrderManagement:
             original_image.height()//bg_height )
         canvas.create_image(0,0, anchor=tk.NW,image=background_image)
         canvas.image=background_image
+
+    def update_manu_prices(self,*args):
+        currency=self.currency_var.get()
+        symbol="₹" if currency=="INR" else "$"
+        rate=self.exchange_rate if currency=="INR" else 1
+        for item , lable in self.menu_lables.items():
+            price=self.menu_items[item]* rate
+            lable.config(text=f"{item}({symbol}{price}):")
+
+    def place_order(self):
+        total_cost=0
+        order_summary="Order Summary:\n"
+        currency=self.currency_var.get()
+        symbol="₹"if currency=="INR"else 1
+        for item , entry in self.menu_lables.items():
+            quantity=entry.get()
+            if quantity.isdigit():
+                quantity=int(quantity)
+                price=self.menu_items[item]* rate
+                cost=quantity* price
+                total_cost+= cost
+                if quantity>0:
+                     order_summary+=f"{item}:{quantity}x{symbol}{price} = {symbol}{cost}\n"
+
+        if total_cost>0:
+             order_summary+=f"\nTotal Cost:{symbol}{total_cost}"
+             messagebox.showinfo(
+                 "Order Placed",order_summary
+             )
+        else:
+            messagebox.showerror("Error","Please oreder at least one item.")
+
+if __name__=="__main__":
+    root=tk.Tk()
+    app=RestaurantOrderManagement(root)     
